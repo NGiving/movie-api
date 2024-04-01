@@ -9,7 +9,7 @@ mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.once('open', () => { console.log('Connected to MongoDB') });
 
 app.get('/', (req, res) => {
-    console.log('Hello');
+    res.send('Hello');
 });
 
 // app.get('/titles', )
