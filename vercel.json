@@ -2,10 +2,15 @@
     "version": 2,
     "builds": [{
         "src": "app.js",
-        "use": "@now/node"
+        "use": "@vercel/node"
     }],
     "routes": [{
         "src": "/(.*)",
-        "dest": "app.js"
+        "dest": "app.js",
+        "methods": ["GET"],
+        "headers": {
+            "Access-Control-Allow-Methods": "GET",
+            "Access-Control-Allow-Headers": "Content-Type"
+        }
     }]
 }
