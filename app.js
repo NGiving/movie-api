@@ -8,16 +8,29 @@ app.enable('trust proxy')
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.once('open', () => { console.log('Connected to MongoDB') });
 
-app.get('/', (req, res) => {
-    res.send('Hello');
-});
-
-// app.get('/titles', )
+app.get('/api/titles', async (req, res) => {
+    try {
+        const titles = await Title.find({}).exec();
+        const ret = titles.map(({ show_id, title, release_year }) => ({
+            show_id: show_id,
+            title: title,
+            release_year: release_year
+        }));
+        res.json(ret);
+    } catch (error) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    }
+})
 
 app.get('/title/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const title = await Title.find({ show_id: id }).exec();
+        if (id.substring(0, 2).toUpperCase() === 'TT')
+            fetch(`https://www.omdbapi.com/?i=${id}&apikey=${process.env.OMDB_API_KEY}`)
+                .then(res => res.json())
+                .then(({ Poster, Ratings, imdbVotes }) => title = {...title, poster: Poster, ratings: Ratings, imdbVotes: imdbVotes})
         res.json(title);
     } catch (error) {
         console.error(error);
