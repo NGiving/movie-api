@@ -5,11 +5,10 @@ require('dotenv').config();
 const Title = require('./models/title.model');
 
 app.enable('trust proxy')
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true
-});
+mongoose.connect(process.env.MONGODB_URI);
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useCreateIndex', true)
+mongoose.set('useUnifiedTopology', true);
 mongoose.connection.once('open', () => { console.log('Connected to MongoDB') });
 
 app.get('/api/titles', async (req, res) => {
