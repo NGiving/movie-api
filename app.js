@@ -12,7 +12,7 @@ mongoose.connection.once('open', () => { console.log('Connected to MongoDB') });
 
 app.get('/api/titles', async (req, res) => {
     try {
-        const titles = await Title.find({}).exec();
+        const titles = await Title.find({}).lean();
         const ret = titles.map(({ show_id, title, release_year }) => ({
             show_id: show_id,
             title: title,

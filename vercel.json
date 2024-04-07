@@ -6,6 +6,11 @@
     }],
     "routes": [{
         "src": "/(.*)",
-        "dest": "app.js"
+        "dest": "app.js",
+        "methods": ["GET", "OPTIONS"],
+        "headers": {
+            "Access-Control-Allow-Methods": "GET",
+            "Access-Control-Allow-Headers": "Content-Type"
+        }
     }]
 }
