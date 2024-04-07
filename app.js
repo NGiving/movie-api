@@ -14,12 +14,12 @@ mongoose.connect(process.env.MONGODB_URI)
 app.get('/api/titles/:page', async (req, res) => {
     const { page } = req.params
     const count = await Title.countDocuments({}).exec();
-    if (page <= 0 || page > Math.ceil(count/50)) {
+    if (page <= 0 || page > Math.ceil(count / 50)) {
         res.status(400).send('Bad Link');
         return;
-    } 
+    }
     try {
-        const titles = await Title.find({}).skip(50 * (page-1)).limit(50).lean();
+        const titles = await Title.find({}).skip(50 * (page - 1)).limit(50).lean();
         const ret = titles.map(({ show_id, title, release_year }) => ({
             show_id: show_id,
             title: title,
@@ -35,11 +35,14 @@ app.get('/api/titles/:page', async (req, res) => {
 app.get('/api/title/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        let title = await Title.findOne({ show_id: id }).lean();
-        if (id.substring(0, 2).toUpperCase() === 'TT')
+        const title = await Title.findOne({ show_id: id }).lean();
+        if (id.substring(0, 2).toUpperCase() === 'TT') {
+            console.log('fetching')
             fetch(`https://www.omdbapi.com/?i=${id}&apikey=${process.env.OMDB_API_KEY}`)
                 .then(res => res.json())
-                .then(({ Poster, Ratings, imdbVotes }) => title = { ...title, poster: Poster, ratings: Ratings, imdbVotes: imdbVotes })
+                .then(({ Poster, Ratings, imbdbVotes }) => res.json({ ...title, poster: Poster, ratings: Ratings, imbdbVotes }))
+            return
+        }
         res.json(title);
     } catch (error) {
         console.error(error);
