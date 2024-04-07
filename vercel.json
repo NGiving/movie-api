@@ -7,9 +7,9 @@
     "routes": [{
         "src": "/(.*)",
         "dest": "app.js",
-        "methods": ["GET", "OPTIONS"],
+        "methods": ["GET", "OPTIONS", "POST", "PUT", "DELETE"],
         "headers": {
-            "Access-Control-Allow-Methods": "GET",
+            "Access-Control-Allow-Methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
             "Access-Control-Allow-Headers": "Content-Type"
         }
     }]

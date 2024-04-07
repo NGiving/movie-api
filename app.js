@@ -30,7 +30,7 @@ app.get('/api/titles/:page', async (req, res) => {
         console.error(error);
         res.status(500).send("Server Error");
     }
-})
+});
 
 app.get('/api/title/:id', async (req, res) => {
     const { id } = req.params;
@@ -49,6 +49,17 @@ app.get('/api/title/:id', async (req, res) => {
         res.status(500).send("Server Error");
     }
 });
+
+app.get('/api/find/:title', async (req, res) => {
+    const title = req.params.title.trim();
+    try {
+        const movie = await Title.findOne( { "title" : { $regex : new RegExp(title, "i") } } );
+        res.json({show_id: movie.show_id})
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+})
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`)
