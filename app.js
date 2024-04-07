@@ -53,7 +53,7 @@ app.get('/api/title/:id', async (req, res) => {
 app.get('/api/find/:title', async (req, res) => {
     const title = req.params.title.trim();
     try {
-        const movie = await Title.findOne( { "title" : { $regex : new RegExp(title, "i") } } );
+        const movie = await Title.find( { "title" : { $regex : new RegExp(title, "i") } } ).limit(10);
         res.json({show_id: movie.show_id})
     } catch (error) {
         console.error(error);
