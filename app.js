@@ -1,9 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+const cors = require('cors');
 require('dotenv').config();
 const Title = require('./models/title.model');
 
+app.use(cors());
 app.enable('trust proxy')
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.once('open', () => { console.log('Connected to MongoDB') });
