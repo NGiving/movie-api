@@ -5,7 +5,11 @@ require('dotenv').config();
 const Title = require('./models/title.model');
 
 app.enable('trust proxy')
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+});
 mongoose.connection.once('open', () => { console.log('Connected to MongoDB') });
 
 app.get('/api/titles', async (req, res) => {
@@ -23,14 +27,14 @@ app.get('/api/titles', async (req, res) => {
     }
 })
 
-app.get('/title/:id', async (req, res) => {
+app.get('/api/title/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const title = await Title.find({ show_id: id }).exec();
+        const title = await Title.findOne({ show_id: id }).exec().lean();
         if (id.substring(0, 2).toUpperCase() === 'TT')
             fetch(`https://www.omdbapi.com/?i=${id}&apikey=${process.env.OMDB_API_KEY}`)
                 .then(res => res.json())
-                .then(({ Poster, Ratings, imdbVotes }) => title = {...title, poster: Poster, ratings: Ratings, imdbVotes: imdbVotes})
+                .then(({ Poster, Ratings, imdbVotes }) => title = { ...title, poster: Poster, ratings: Ratings, imdbVotes: imdbVotes })
         res.json(title);
     } catch (error) {
         console.error(error);
