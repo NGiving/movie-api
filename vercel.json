@@ -9,7 +9,7 @@
         "dest": "app.js",
         "methods": ["GET", "OPTIONS", "POST", "PUT", "DELETE"],
         "headers": {
-            "Access-Control-Allow-Methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+            "Access-Control-Allow-Methods": "GET POST OPTIONS PUT DELET",
             "Access-Control-Allow-Headers": "Content-Type"
         }
     }]
