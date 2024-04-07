@@ -7,12 +7,19 @@ const Title = require('./models/title.model');
 
 app.use(cors());
 app.enable('trust proxy')
-mongoose.connect(process.env.MONGODB_URI);
-mongoose.connection.once('open', () => { console.log('Connected to MongoDB') });
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(error => console.log(error));
 
-app.get('/api/titles', async (req, res) => {
+app.get('/api/titles/:page', async (req, res) => {
+    const { page } = req.params
+    const count = await Title.countDocuments({}).exec();
+    if (page <= 0 || page > Math.ceil(count/50)) {
+        res.status(400).send('Bad Link');
+        return;
+    } 
     try {
-        const titles = await Title.find({}).lean();
+        const titles = await Title.find({}).skip(50 * (page-1)).limit(50).lean();
         const ret = titles.map(({ show_id, title, release_year }) => ({
             show_id: show_id,
             title: title,
@@ -20,7 +27,7 @@ app.get('/api/titles', async (req, res) => {
         }));
         res.json(ret);
     } catch (error) {
-        console.error(err);
+        console.error(error);
         res.status(500).send("Server Error");
     }
 })
