@@ -30,7 +30,7 @@ app.get('/api/titles', async (req, res) => {
 app.get('/api/title/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const title = await Title.findOne({ show_id: id }).exec().lean();
+        const title = await Title.findOne({ show_id: id }).lean();
         if (id.substring(0, 2).toUpperCase() === 'TT')
             fetch(`https://www.omdbapi.com/?i=${id}&apikey=${process.env.OMDB_API_KEY}`)
                 .then(res => res.json())
