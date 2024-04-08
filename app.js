@@ -40,7 +40,7 @@ app.get('/api/title/:id', async (req, res) => {
             console.log('fetching')
             fetch(`https://www.omdbapi.com/?i=${id}&apikey=${process.env.OMDB_API_KEY}`)
                 .then(res => res.json())
-                .then(({ Poster, Ratings, imbdbVotes }) => res.json({ ...title, poster: Poster, ratings: Ratings, imddbVotes: imbdbVotes }))
+                .then(({ Poster, Ratings, imbdbVotes }) => res.json({ ...title, poster: Poster, ratings: Ratings, imdbVotes: imdbVotes }))
             return
         }
         res.json(title);
@@ -53,7 +53,7 @@ app.get('/api/title/:id', async (req, res) => {
 app.get('/api/find/:title', async (req, res) => {
     const title = req.params.title.trim();
     try {
-        const movie = await Title.find({ "title": { $regex: new RegExp(title, "i") } }).sort({ "title": -1 }).limit(10);
+        const movie = await Title.find({ "title": { $regex: new RegExp(title, "i") } }).sort({ "title": -1 }).limit(25);
         res.json(movie)
     } catch (error) {
         console.error(error);
