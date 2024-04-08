@@ -40,7 +40,7 @@ app.get('/api/title/:id', async (req, res) => {
             console.log('fetching')
             fetch(`https://www.omdbapi.com/?i=${id}&apikey=${process.env.OMDB_API_KEY}`)
                 .then(res => res.json())
-                .then(({ Poster, Ratings, imbdbVotes }) => res.json({ ...title, poster: Poster, ratings: Ratings, imdbVotes: imdbVotes }))
+                .then(({ Poster, Ratings, imdbVotes }) => res.json({ ...title, poster: Poster, ratings: Ratings, imdbVotes: imdbVotes }))
             return
         }
         res.json(title);
