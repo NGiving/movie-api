@@ -11,6 +11,16 @@ mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(error => console.log(error));
 
+app.get('/api/titles/count', async (req, res) => {
+    try {
+        const count = await Title.countDocuments({}).exec();
+        res.json({count: count});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+});
+
 app.get('/api/titles/:page', async (req, res) => {
     const { page } = req.params
     const count = await Title.countDocuments({}).exec();
@@ -20,6 +30,70 @@ app.get('/api/titles/:page', async (req, res) => {
     }
     try {
         const titles = await Title.find({}).skip(50 * (page - 1)).limit(50).lean();
+        const ret = titles.map(({ show_id, title, release_year }) => ({
+            show_id: show_id,
+            title: title,
+            release_year: release_year
+        }));
+        res.json(ret);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+});
+
+app.get('/api/titles/by/year-lastest/page/:page', async (req, res) => {
+    const { page } = req.params;
+    try {
+        const titles = await Title.find({}).sort({"release_year": -1}).skip(50 * (page - 1)).limit(50).lean();
+        const ret = titles.map(({ show_id, title, release_year }) => ({
+            show_id: show_id,
+            title: title,
+            release_year: release_year
+        }));
+        res.json(ret);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+});
+
+app.get('/api/titles/by/year-oldest/page/:page', async (req, res) => {
+    const { page } = req.params;
+    try {
+        const titles = await Title.find({}).sort({"release_year": 1}).skip(50 * (page - 1)).limit(50).lean();
+        const ret = titles.map(({ show_id, title, release_year }) => ({
+            show_id: show_id,
+            title: title,
+            release_year: release_year
+        }));
+        res.json(ret);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+});
+
+app.get('/api/titles/by/title-ascending/page/:page', async (req, res) => {
+    const { page } = req.params;
+    try {
+        const titles = await Title.find({}).sort({"title": 1}).skip(50 * (page - 1)).limit(50).lean();
+        const ret = titles.map(({ show_id, title, release_year }) => ({
+            show_id: show_id,
+            title: title,
+            release_year: release_year
+        }));
+        res.json(ret);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+});
+
+app.get('/api/titles/by/title-descending/page/:page', async (req, res) => {
+    const { page } = req.params;
+    try {
+        const titles = await Title.find({}).sort({"title": 1}).skip(50 * (page - 1)).limit(50).lean();
         const ret = titles.map(({ show_id, title, release_year }) => ({
             show_id: show_id,
             title: title,
